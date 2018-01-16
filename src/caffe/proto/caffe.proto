@@ -308,7 +308,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 149 (last added: upsampling_param)
+// LayerParameter next available layer-specific ID: 150 (last added: BNParameter)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -407,6 +407,7 @@ message LayerParameter {
   optional WindowDataParameter window_data_param = 129;
   optional UnpoolingParameter unpooling_param = 147;
   optional UpsamplingParameter upsampling_param = 148;
+  optional BNParameter bn_param = 149;
 }
 
 // Message that stores parameters used to apply transformation
@@ -927,6 +928,23 @@ message PoolingParameter {
 
 message UpsamplingParameter {
  optional uint32 scalefactor = 1 [default = 2];
+}
+
+message BNParameter {
+  optional FillerParameter slope_filler = 1;
+  optional FillerParameter bias_filler = 2;
+  optional float momentum = 3 [default = 0.9];
+  optional float eps = 4 [default = 1e-5];
+  // If true, will use the moving average mean and std for training and test.
+  // Will override the lr_param and freeze all the parameters.
+  // Make sure to initialize the layer properly with pretrained parameters.
+  optional bool frozen = 5 [default = false];
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 6 [default = DEFAULT];
 }
 
 message UnpoolingParameter {
